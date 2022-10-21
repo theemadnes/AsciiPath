@@ -1,4 +1,4 @@
-module theemadnes/ascii-art-server
+module AsciiPath
 
 go 1.19
 
