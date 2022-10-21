@@ -12,6 +12,7 @@ $ curl 127.0.0.1:8080/how/are/you
    |_| |_|  \___/    \_/\_/      \__,_| |_|     \___|    \__, |  \___/   \__,_|
 ```
 
+Set the font via the `font` header - available fonts listed [here](https://github.com/common-nighthawk/go-figure#supported-fonts)
 ```Testing a font via the font header
 $ curl 127.0.0.1:8080/how/are/you --header "font: cosmic"
     ::   .:      ...     .::    .   .:::    :::.     :::::::..   .,::::::    .-:.     ::-.    ...      ...    :::
