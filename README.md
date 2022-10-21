@@ -3,6 +3,8 @@ Simple golang web service that takes a string as input and returns ASCII art ren
 
 #### Usage
 
+The Golang server will listen on whatever port is passed via `PORT` envvar; otherwise, it will default to `8080`.
+
 ```default
 $ curl 127.0.0.1:8080/how/are/you
     _
