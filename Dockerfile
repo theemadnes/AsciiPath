@@ -18,7 +18,8 @@
 # Use the offical golang image to create a binary.
 # This is based on Debian and sets the GOPATH to /go.
 # https://hub.docker.com/_/golang
-FROM golang:1.19 as builder
+#FROM golang:1.19 as builder
+FROM cgr.dev/chainguard/go:latest as builder
 
 # Create and change to the app directory.
 WORKDIR /app
@@ -34,6 +35,7 @@ COPY . ./
 
 # Build the binary.
 RUN CGO_ENABLED=0 go build -v -o server
+#RUN go build -v -o server
 
 # Use the official Debian slim image for a lean production container.
 # https://hub.docker.com/_/debian
@@ -42,7 +44,8 @@ RUN CGO_ENABLED=0 go build -v -o server
 #RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 #    ca-certificates && \
 #    rm -rf /var/lib/apt/lists/*
-FROM gcr.io/distroless/base-debian11
+#FROM gcr.io/distroless/base-debian11
+FROM cgr.dev/chainguard/static:latest
 
 # Copy the binary to the production image from the builder stage.
 #COPY --from=builder /app/server /app/server
