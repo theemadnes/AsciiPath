@@ -26,13 +26,21 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 
 	// handle PUTs
 	if r.Method == "PUT" {
+		// attempt to read the payload of the PUT
 		reqBody, err := ioutil.ReadAll(r.Body)
 		if err != nil {
 			fmt.Printf("server: could not read request body: %s\n", err)
 		}
 
-		fmt.Printf("PUT request with body %s\n", reqBody)
-		str := strings.TrimSpace(string(reqBody))                      // trim leading & trailing whitespace
+		str := strings.TrimSpace(string(reqBody)) // trim leading & trailing whitespace
+		// check if reqBody-derived string is empty
+		if len(str) == 0 {
+			str = "empty request body"
+			fmt.Printf("PUT request with empty body\n")
+		} else {
+			fmt.Printf("PUT request with body `%s`\n", str)
+		}
+
 		asciiStr := figure.NewFigure(str, r.Header.Get("font"), false) // `false` means we'll replace non-ASCII chars with `?`
 		io.WriteString(w, asciiStr.String())
 		return
