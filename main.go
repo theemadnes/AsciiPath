@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -21,10 +22,24 @@ func getEnv(key, fallback string) string {
 // gets `font` header to change font type
 // the font value must be supported via https://github.com/common-nighthawk/go-figure#supported-fonts
 // if the `font` header is empty, the r.Header.Get will return `""`
-func getHandler(w http.ResponseWriter, r *http.Request) {
+func requestHandler(w http.ResponseWriter, r *http.Request) {
 
+	// handle PUTs
+	if r.Method == "PUT" {
+		reqBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			fmt.Printf("server: could not read request body: %s\n", err)
+		}
+
+		fmt.Printf("PUT request with body %s\n", reqBody)
+		str := strings.TrimSpace(string(reqBody))                      // trim leading & trailing whitespace
+		asciiStr := figure.NewFigure(str, r.Header.Get("font"), false) // `false` means we'll replace non-ASCII chars with `?`
+		io.WriteString(w, asciiStr.String())
+		return
+	}
+	// otherwise handle GETs
 	if r.URL.Path != "/" {
-		fmt.Printf("Req: %s\n", r.URL.Path)
+		fmt.Printf("GET request at %s\n", r.URL.Path)
 		//http.NotFound(w, r)
 		str := strings.Replace(r.URL.Path, "/", " ", -1)               // replace slashes in path with spaces so `hi/there` results in `hi there`
 		str = strings.TrimSpace(str)                                   // trim leading & trailing whitespace
@@ -32,17 +47,18 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, asciiStr.String())
 		return
 	}
-	fmt.Printf("got / request\n")
+	fmt.Printf("GET request at /\n")
 	str := "base path"
 	asciiStr := figure.NewFigure(str, r.Header.Get("font"), true)
 	io.WriteString(w, asciiStr.String())
+	return
 }
 
 func main() {
 	port := getEnv("PORT", "8080")
 
 	//http.HandleFunc("/*")
-	http.HandleFunc("/", getHandler)
+	http.HandleFunc("/", requestHandler)
 
 	http.ListenAndServe(":"+port, nil)
 }
