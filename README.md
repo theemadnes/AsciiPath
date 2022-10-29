@@ -5,7 +5,9 @@ Simple golang web service that takes a string as input and returns ASCII art ren
 
 The Golang server will listen on whatever port is passed via `PORT` envvar; otherwise, it will default to `8080`.
 
-Currently, the server responds only to `GET`s and will base the response on the path passed to the server. `/`s will be replaced with spaces (` `):
+Currently, the server responds to either:
+- `GET`s will base the response on the path passed to the server. `/`s will be replaced with spaces (` `)
+- `PUT`s will base the response on the string passed to the server 
 
 ```default
 $ curl 127.0.0.1:8080/how/are/you
@@ -27,7 +29,18 @@ $ curl 127.0.0.1:8080/how/are/you --header "font: cosmic"
    MMM    YMM  "YMMMMMP"      "M "M"       YMM   ""`  MMMM   "W"  """"YUMMM    mM"          "YMMMMMP"  "YmmMMMM""
 ```
 
-Example when using Cloud Run
+A `PUT` example
+```
+$ curl -X PUT http://127.0.0.1:8080 -d "123   45" --Header "font: cosmic"
+:.  .:::.   .::.             .:: ::::::::
+;; ,;'``;. ;'`';;,         ,;';; `;;``'';
+[[ ''  ,[['   .n[[        ,[' [[  [[,_
+$$ .c$$P'    ``"$$$.      $P__$$c `""*Ycc
+88d88 _,oo,  ,,o888"      `"""88" __,od8"
+MMMMMUP*"^^  YMMP"            MM  MMP"
+```
+
+Examples when using Cloud Run
 ```
 $ curl https://asciipath-4uotx33u2a-uc.a.run.app/Hello/World --Header "font:banner3-D"
 '##::::'##:'########:'##:::::::'##::::::::'#######::  '##:::::'##::'#######::'########::'##:::::::'########::
@@ -38,4 +51,15 @@ $ curl https://asciipath-4uotx33u2a-uc.a.run.app/Hello/World --Header "font:bann
  ##:::: ##: ##::::::: ##::::::: ##::::::: ##:::: ##:   ##: ##: ##: ##:::: ##: ##::. ##:: ##::::::: ##:::: ##:
  ##:::: ##: ########: ########: ########:. #######::  . ###. ###::. #######:: ##:::. ##: ########: ########::
 ..:::::..::........::........::........:::.......:::  :...::...::::.......:::..:::::..::........::........:::
+```
+
+A `PUT` example to Cloud Run with an empty payload
+```
+$ curl -X PUT https://asciipath-4uotx33u2a-uc.a.run.app -d "" --Header "font: cosmic"
+.,::::::  .        :   ::::::::::. ::::::::::::.-:.     ::-.  :::::::.      ...     :::::::-.  .-:.     ::-.
+;;;;''''  ;;,.    ;;;   `;;;```.;;;;;;;;;;;'''' ';;.   ;;;;'   ;;;'';;'  .;;;;;;;.   ;;,   `';, ';;.   ;;;;'
+ [[cccc   [[[[, ,[[[[,   `]]nnn]]'      [[        '[[,[[['     [[[__[[\.,[[     \[[, `[[     [[   '[[,[[['
+ $$""""   $$$$$$$$"$$$    $$$""         $$          c$$"       $$""""Y$$$$$,     $$$  $$,    $$     c$$"
+ 888oo,__ 888 Y88" 888o   888o          88,       ,8P"`       _88o,,od8P"888,_ _,88P  888_,o8P'   ,8P"`
+ """"YUMMMMMM  M'  "MMM   YMMMb         MMM      mM"          ""YUMMMP"   "YMMMMMP"   MMMMP"`    mM"
 ```
