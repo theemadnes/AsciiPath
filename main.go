@@ -35,7 +35,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		str := strings.TrimSpace(string(reqBody)) // trim leading & trailing whitespace
 		// check if reqBody-derived string is empty
 		if len(str) == 0 {
-			str = "empty request body"
+			str = "empty body"
 			fmt.Printf("PUT request with empty body\n")
 		} else {
 			fmt.Printf("PUT request with body `%s`\n", str)
